@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-from tkinter import Tk, Button, BOTTOM, TOP, StringVar, BooleanVar, X, BOTH, RIGHT, ttk, messagebox
+from tkinter import Tk, Button, Frame, BOTTOM, TOP, StringVar, BooleanVar, X, BOTH, RIGHT, ttk, messagebox
 
 from CLI import get_args_priority
 from DungeonRandomizer import parse_cli
@@ -19,6 +19,7 @@ from source.gui.randomize.generation import generation_page
 from source.gui.bottom import bottom_frame, create_guiargs
 from GuiUtils import set_icon
 from Main import __version__ as ESVersion
+import source.gui.widgets as widgets
 
 from source.classes.BabelFish import BabelFish
 from source.classes.Empty import Empty
@@ -69,6 +70,8 @@ def guiMain(args=None):
 
     mainWindow.wm_title("Door Shuffle %s" % ESVersion)
     mainWindow.protocol("WM_DELETE_WINDOW", guiExit)  # intercept when user clicks the X
+    mainWindow.geometry("640x400")
+    mainWindow.configure(background="black")
 
     # set program icon
     set_icon(mainWindow)
@@ -90,16 +93,92 @@ def guiMain(args=None):
     # make array for frames
     self.frames = {}
 
+    # make style
+    bgcolor = "black"
+    fgcolor = "white"
+    use_style = True
+    style = ttk.Style()
+    style.theme_create("MyDefault", parent="alt", settings={
+        "*": {
+            "configure": {
+                "background": bgcolor,
+                "foreground": fgcolor
+            }
+        },
+        "TCheckbutton": {
+            "configure": {
+                "background": bgcolor,
+                "foreground": fgcolor,
+                "indicatorcolor": bgcolor
+            }
+        },
+        "TButton": {
+            "configure": {
+                "background": bgcolor,
+                "foreground": fgcolor,
+                "borderwidth": 1,
+                "relief": "groove"
+            },
+            "map": {
+                "relief": [ ( "pressed", "ridge" ) ]
+            }
+        },
+        "TEntry": {
+            "configure": {
+                "background": bgcolor,
+                "foreground": fgcolor,
+                "fieldbackground": bgcolor,
+                "insertioncolor": fgcolor
+            }
+        },
+        "TFrame": {
+            "configure": {
+                "background": bgcolor,
+                "foreground": fgcolor
+            }
+        },
+        "TMenubutton": {
+            "configure": {
+                "background": bgcolor,
+                "foreground": fgcolor,
+                "relief": "groove"
+            }
+        },
+        "TNotebook": {
+            "configure": {
+                "tabposition": "nwse"
+            }
+        },
+        "TNotebook.Tab": {
+            "configure": {
+                "background": fgcolor,
+                "foreground": bgcolor
+            },
+            "map": {
+                "background": [ ( "selected", bgcolor ) ],
+                "foreground": [ ( "selected", fgcolor ) ]
+            }
+        },
+        "TSpinbox": {
+            "configure": {
+            }
+        },
+    })
+    if use_style:
+        style.theme_use("MyDefault")
+
     # make pages for each section
-    self.notebook = ttk.Notebook(self)
+    self.notebook = ttk.Notebook(self, width=640)
     self.pages["randomizer"] = ttk.Frame(self.notebook)
     self.pages["adjust"] = ttk.Frame(self.notebook)
     self.pages["startinventory"] = ttk.Frame(self.notebook)
     self.pages["custom"] = ttk.Frame(self.notebook)
+    self.pages["plando"] = ttk.Frame(self.notebook)
     self.notebook.add(self.pages["randomizer"], text='Randomize')
     self.notebook.add(self.pages["adjust"], text='Adjust')
     self.notebook.add(self.pages["startinventory"], text='Starting Inventory')
     self.notebook.add(self.pages["custom"], text='Custom Item Pool')
+    self.notebook.add(self.pages["plando"], text='Plandomizer')
     self.notebook.pack()
 
     # randomizer controls
@@ -113,7 +192,7 @@ def guiMain(args=None):
     #   Multiworld:       Multiworld settings
     #   Game Options:     Cosmetic settings that don't affect logic/placement
     #   Generation Setup: Primarily one&done settings
-    self.pages["randomizer"].notebook = ttk.Notebook(self.pages["randomizer"])
+    self.pages["randomizer"].notebook = ttk.Notebook(self.pages["randomizer"], width=640)
 
     # make array for pages
     self.pages["randomizer"].pages = {}
@@ -154,7 +233,7 @@ def guiMain(args=None):
     self.pages["bottom"].pages = {}
     self.pages["bottom"].pages["content"] = bottom_frame(self, self, None)
     ## Save Settings Button
-    savesettingsButton = Button(self.pages["bottom"].pages["content"], text='Save Settings to File', command=lambda: save_settings_from_gui(True))
+    savesettingsButton = widgets.make_button(self.pages["bottom"].pages["content"], text='Save Settings to File', command=lambda: save_settings_from_gui(True))
     savesettingsButton.pack(side=RIGHT)
 
     # set bottom frame to main window

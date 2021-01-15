@@ -5,7 +5,15 @@ import os
 import webbrowser
 from source.classes.Empty import Empty
 
+global bgcolor
+global fgcolor
+bgcolor = "black"
+fgcolor = "white"
+
 def enemizer_page(parent,settings):
+    global bgcolor
+    global bgcolor
+
     def open_enemizer_download(_evt):
         webbrowser.open("https://github.com/Bonta0/Enemizer/releases")
 
@@ -19,13 +27,13 @@ def enemizer_page(parent,settings):
     self.frames = {}
 
     # Enemizer option frames
-    self.frames["checkboxes"] = Frame(self)
+    self.frames["checkboxes"] = ttk.Frame(self)
     self.frames["checkboxes"].pack(anchor=W)
 
-    self.frames["selectOptionsFrame"] = Frame(self)
-    self.frames["leftEnemizerFrame"] = Frame(self.frames["selectOptionsFrame"])
-    self.frames["rightEnemizerFrame"] = Frame(self.frames["selectOptionsFrame"])
-    self.frames["bottomEnemizerFrame"] = Frame(self)
+    self.frames["selectOptionsFrame"] = ttk.Frame(self)
+    self.frames["leftEnemizerFrame"] = ttk.Frame(self.frames["selectOptionsFrame"])
+    self.frames["rightEnemizerFrame"] = ttk.Frame(self.frames["selectOptionsFrame"])
+    self.frames["bottomEnemizerFrame"] = ttk.Frame(self)
     self.frames["selectOptionsFrame"].pack(fill=X)
     self.frames["leftEnemizerFrame"].pack(side=LEFT)
     self.frames["rightEnemizerFrame"].pack(side=RIGHT)
@@ -56,23 +64,24 @@ def enemizer_page(parent,settings):
     self.widgets[widget].pieces = {}
 
     # frame
-    self.widgets[widget].pieces["frame"] = Frame(self.frames["bottomEnemizerFrame"])
+    self.widgets[widget].pieces["frame"] = ttk.Frame(self.frames["bottomEnemizerFrame"])
     # frame: label
-    self.widgets[widget].pieces["frame"].label = Label(self.widgets[widget].pieces["frame"], text="EnemizerCLI path: ")
+    self.widgets[widget].pieces["frame"].label = widgets.make_label(self.widgets[widget].pieces["frame"], text="EnemizerCLI path: ")
     self.widgets[widget].pieces["frame"].label.pack(side=LEFT)
 
     # get app online
     self.widgets[widget].pieces["online"] = Empty()
     # get app online: label
-    self.widgets[widget].pieces["online"].label = Label(self.widgets[widget].pieces["frame"], text="(get online)", fg="blue", cursor="hand2")
+    self.widgets[widget].pieces["online"].label = widgets.make_label(self.widgets[widget].pieces["frame"], text="(get online)", fg="blue", cursor="hand2")
     self.widgets[widget].pieces["online"].label.pack(side=LEFT)
     # get app online: open browser
     self.widgets[widget].pieces["online"].label.bind("<Button-1>", open_enemizer_download)
     # storage var
     self.widgets[widget].storageVar = StringVar(value=settings["enemizercli"])
     # textbox
-    self.widgets[widget].pieces["textbox"] = Entry(self.widgets[widget].pieces["frame"], textvariable=self.widgets[widget].storageVar)
-    self.widgets[widget].pieces["textbox"].pack(side=LEFT, fill=X, expand=True)
+    self.widgets[widget].pieces["textbox"] = widgets.make_textbox(self.widgets[widget].pieces["frame"], None, self.widgets[widget].storageVar)
+    # self.widgets[widget].pieces["textbox"].configure(background=bgcolor, foreground=fgcolor, insertbackground=fgcolor)
+    # self.widgets[widget].pieces["textbox"].pack(side=LEFT, fill=X, expand=True)
 
     def EnemizerSelectPath():
         path = filedialog.askopenfilename(filetypes=[("EnemizerCLI executable", "*EnemizerCLI*")], initialdir=os.path.join("."))
@@ -80,7 +89,7 @@ def enemizer_page(parent,settings):
             self.widgets[widget].storageVar.set(path)
             settings["enemizercli"] = path
     # dialog button
-    self.widgets[widget].pieces["opendialog"] = Button(self.widgets[widget].pieces["frame"], text='...', command=EnemizerSelectPath)
+    self.widgets[widget].pieces["opendialog"] = widgets.make_button(parent=self.widgets[widget].pieces["frame"], text="...", command=EnemizerSelectPath)
     self.widgets[widget].pieces["opendialog"].pack(side=LEFT)
 
     # frame: pack

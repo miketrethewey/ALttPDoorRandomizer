@@ -4,6 +4,11 @@ import json
 import os
 from source.classes.Empty import Empty
 
+global bgcolor
+global fgcolor
+bgcolor = "black"
+fgcolor = "white"
+
 def multiworld_page(parent,settings):
     # Multiworld
     self = ttk.Frame(parent)
@@ -13,7 +18,7 @@ def multiworld_page(parent,settings):
 
     # Multiworld option sections
     self.frames = {}
-    self.frames["widgets"] = Frame(self)
+    self.frames["widgets"] = ttk.Frame(self)
     self.frames["widgets"].pack(anchor=W, fill=X)
 
     # Load Multiworld option widgets as defined by JSON file
@@ -37,9 +42,9 @@ def multiworld_page(parent,settings):
     self.widgets[widget].pieces = {}
 
     # frame
-    self.widgets[widget].pieces["frame"] = Frame(self.frames["widgets"])
+    self.widgets[widget].pieces["frame"] = ttk.Frame(self.frames["widgets"])
     # frame: label
-    self.widgets[widget].pieces["frame"].label = Label(self.widgets[widget].pieces["frame"], text='Player names')
+    self.widgets[widget].pieces["frame"].label = widgets.make_label(self.widgets[widget].pieces["frame"], text='Player names')
     # storage var
     self.widgets[widget].storageVar = StringVar(value=settings["names"])
 
@@ -48,12 +53,13 @@ def multiworld_page(parent,settings):
         settings["names"] = self.widgets["names"].storageVar.get()
     self.widgets[widget].storageVar.trace_add("write",saveMultiNames)
     # textbox
-    self.widgets[widget].pieces["textbox"] = Entry(self.widgets[widget].pieces["frame"], textvariable=self.widgets[widget].storageVar)
+    self.widgets[widget].pieces["textbox"] = widgets.make_textbox(self.widgets[widget].pieces["frame"], None, self.widgets[widget].storageVar)
+    # self.widgets[widget].pieces["textbox"].configure(background=bgcolor, foreground=fgcolor, insertbackground=fgcolor)
 
     # frame label: pack
     self.widgets[widget].pieces["frame"].label.pack(side=LEFT, anchor=N)
     # textbox: pack
-    self.widgets[widget].pieces["textbox"].pack(side=LEFT, anchor=N, fill=X, expand=True)
+    # self.widgets[widget].pieces["textbox"].pack(side=LEFT, anchor=N, fill=X, expand=True)
     # frame: pack
     self.widgets[widget].pieces["frame"].pack(side=LEFT, anchor=N, fill=X, expand=True)
 

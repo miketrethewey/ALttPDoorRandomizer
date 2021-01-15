@@ -12,7 +12,7 @@ def entrando_page(parent):
 
     # Entrance Randomizer option sections
     self.frames = {}
-    self.frames["widgets"] = Frame(self)
+    self.frames["widgets"] = ttk.Frame(self)
     self.frames["widgets"].pack(anchor=W)
 
     # Load Entrance Randomizer option widgets as defined by JSON file

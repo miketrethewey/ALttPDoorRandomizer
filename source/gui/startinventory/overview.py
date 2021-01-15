@@ -11,7 +11,7 @@ def startinventory_page(top,parent):
 
     # Create uniform list columns
     def create_list_frame(parent, framename):
-        parent.frames[framename] = Frame(parent)
+        parent.frames[framename] = ttk.Frame(parent)
         parent.frames[framename].pack(side=LEFT, padx=(0,0), anchor=N)
         parent.frames[framename].thisRow = 0
         parent.frames[framename].thisCol = 0

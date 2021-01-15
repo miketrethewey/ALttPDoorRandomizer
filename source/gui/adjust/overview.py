@@ -7,7 +7,15 @@ import json
 import logging
 import os
 
+global bgcolor
+global fgcolor
+bgcolor = "black"
+fgcolor = "white"
+
 def adjust_page(top, parent, settings):
+    global bgcolor
+    global fgcolor
+
     # Adjust page
     self = ttk.Frame(parent)
 
@@ -16,14 +24,14 @@ def adjust_page(top, parent, settings):
 
     # Adjust option sections
     self.frames = {}
-    self.frames["checkboxes"] = Frame(self)
+    self.frames["checkboxes"] = ttk.Frame(self)
     self.frames["checkboxes"].pack(anchor=W)
 
     # Adjust option frames
-    self.frames["selectOptionsFrame"] = Frame(self)
-    self.frames["leftAdjustFrame"] = Frame(self.frames["selectOptionsFrame"])
-    self.frames["rightAdjustFrame"] = Frame(self.frames["selectOptionsFrame"])
-    self.frames["bottomAdjustFrame"] = Frame(self)
+    self.frames["selectOptionsFrame"] = ttk.Frame(self)
+    self.frames["leftAdjustFrame"] = ttk.Frame(self.frames["selectOptionsFrame"])
+    self.frames["rightAdjustFrame"] = ttk.Frame(self.frames["selectOptionsFrame"])
+    self.frames["bottomAdjustFrame"] = ttk.Frame(self)
     self.frames["selectOptionsFrame"].pack(fill=X)
     self.frames["leftAdjustFrame"].pack(side=LEFT)
     self.frames["rightAdjustFrame"].pack(side=RIGHT)
@@ -45,9 +53,9 @@ def adjust_page(top, parent, settings):
     # Sprite Selection
     # This one's more-complicated, build it and stuff it
     self.spriteNameVar2 = StringVar()
-    spriteDialogFrame2 = Frame(self.frames["leftAdjustFrame"])
-    baseSpriteLabel2 = Label(spriteDialogFrame2, text='Sprite:')
-    spriteEntry2 = Label(spriteDialogFrame2, textvariable=self.spriteNameVar2)
+    spriteDialogFrame2 = ttk.Frame(self.frames["leftAdjustFrame"])
+    baseSpriteLabel2 = widgets.make_label(spriteDialogFrame2, text='Sprite:')
+    spriteEntry2 = widgets.make_label(spriteDialogFrame2, textvariable=self.spriteNameVar2)
     self.sprite = None
 
     def set_sprite(sprite_param, random_sprite=False):
@@ -62,7 +70,7 @@ def adjust_page(top, parent, settings):
     def SpriteSelectAdjuster():
         SpriteSelector(parent, set_sprite, adjuster=True)
 
-    spriteSelectButton2 = Button(spriteDialogFrame2, text='...', command=SpriteSelectAdjuster)
+    spriteSelectButton2 = widgets.make_button(spriteDialogFrame2, text='...', command=SpriteSelectAdjuster)
 
     baseSpriteLabel2.pack(side=LEFT)
     spriteEntry2.pack(side=LEFT)
@@ -71,20 +79,21 @@ def adjust_page(top, parent, settings):
 
     # Path to game file to Adjust
     # This one's more-complicated, build it and stuff it
-    adjustRomFrame = Frame(self.frames["bottomAdjustFrame"])
-    adjustRomLabel = Label(adjustRomFrame, text='Rom to adjust: ')
+    adjustRomFrame = ttk.Frame(self.frames["bottomAdjustFrame"])
+    adjustRomLabel = widgets.make_label(adjustRomFrame, text='Rom to adjust: ')
     self.romVar2 = StringVar(value=settings["rom"])
-    romEntry2 = Entry(adjustRomFrame, textvariable=self.romVar2)
+    romEntry2 = widgets.make_textbox(adjustRomFrame, None, self.romVar2)
+    # romEntry2.configure(background=bgcolor, foreground=fgcolor, insertbackground=fgcolor)
 
     def RomSelect2():
         rom = filedialog.askopenfilename(filetypes=[("Rom Files", (".sfc", ".smc")), ("All Files", "*")])
         if rom:
             settings["rom"] = rom
             self.romVar2.set(rom)
-    romSelectButton2 = Button(adjustRomFrame, text='Select Rom', command=RomSelect2)
+    romSelectButton2 = widgets.make_button(adjustRomFrame, text='Select Rom', command=RomSelect2)
 
     adjustRomLabel.pack(side=LEFT)
-    romEntry2.pack(side=LEFT, fill=X, expand=True)
+    # romEntry2.pack(side=LEFT, fill=X, expand=True)
     romSelectButton2.pack(side=LEFT)
     adjustRomFrame.pack(fill=X)
 
@@ -114,7 +123,7 @@ def adjust_page(top, parent, settings):
         else:
             messagebox.showinfo(title="Success", message="Rom patched successfully")
 
-    adjustButton = Button(self.frames["bottomAdjustFrame"], text='Adjust Rom', command=adjustRom)
+    adjustButton = widgets.make_button(self.frames["bottomAdjustFrame"], text='Adjust Rom', command=adjustRom)
     adjustButton.pack(side=BOTTOM, padx=(5, 0))
 
     return self,settings

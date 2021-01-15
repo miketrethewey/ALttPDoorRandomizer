@@ -14,12 +14,12 @@ def gameoptions_page(top, parent):
 
     # Game Options option sections
     self.frames = {}
-    self.frames["checkboxes"] = Frame(self)
+    self.frames["checkboxes"] = ttk.Frame(self)
     self.frames["checkboxes"].pack(anchor=W)
 
     # Game Options frames
-    self.frames["leftRomOptionsFrame"] = Frame(self)
-    self.frames["rightRomOptionsFrame"] = Frame(self)
+    self.frames["leftRomOptionsFrame"] = ttk.Frame(self)
+    self.frames["rightRomOptionsFrame"] = ttk.Frame(self)
     self.frames["leftRomOptionsFrame"].pack(side=LEFT)
     self.frames["rightRomOptionsFrame"].pack(side=RIGHT)
 
@@ -41,15 +41,15 @@ def gameoptions_page(top, parent):
 
     ## Sprite selection
     # This one's more-complicated, build it and stuff it
-    spriteDialogFrame = Frame(self.frames["leftRomOptionsFrame"])
-    baseSpriteLabel = Label(spriteDialogFrame, text='Sprite:')
+    spriteDialogFrame = ttk.Frame(self.frames["leftRomOptionsFrame"])
+    baseSpriteLabel = widgets.make_label(spriteDialogFrame, text='Sprite:')
 
     self.widgets["sprite"] = {}
     self.widgets["sprite"]["spriteObject"] = None
     self.widgets["sprite"]["spriteNameVar"] = StringVar()
 
     self.widgets["sprite"]["spriteNameVar"].set('(unchanged)')
-    spriteEntry = Label(spriteDialogFrame, textvariable=self.widgets["sprite"]["spriteNameVar"])
+    spriteEntry = widgets.make_label(spriteDialogFrame, textvariable=self.widgets["sprite"]["spriteNameVar"])
 
     def sprite_setter(spriteObject):
         self.widgets["sprite"]["spriteObject"] = spriteObject
@@ -59,7 +59,7 @@ def gameoptions_page(top, parent):
                                                       spriteNameVar=self.widgets["sprite"]["spriteNameVar"],
                                                       randomSpriteVar=top.randomSprite))
 
-    spriteSelectButton = Button(spriteDialogFrame, text='...', command=sprite_select)
+    spriteSelectButton = widgets.make_button(spriteDialogFrame, text='...', command=sprite_select)
 
     baseSpriteLabel.pack(side=LEFT)
     spriteEntry.pack(side=LEFT)

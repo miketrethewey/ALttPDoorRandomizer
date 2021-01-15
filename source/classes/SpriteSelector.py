@@ -10,6 +10,7 @@ import webbrowser
 from GuiUtils import ToolTips, set_icon, BackgroundTaskProgress
 from Rom import Sprite
 from Utils import is_bundled, local_path, output_path, open_file
+import source.gui.widgets as widgets
 
 
 class SpriteSelector(object):
@@ -45,47 +46,47 @@ class SpriteSelector(object):
         def open_spritesomething_listing(_evt):
             webbrowser.open("https://artheau.github.io/SpriteSomething/resources/app/snes/zelda3/link/sprites.html")
 
-        official_frametitle = Frame(self.window)
-        official_title_text = Label(official_frametitle, text="Official Sprites")
+        official_frametitle = ttk.Frame(self.window)
+        official_title_text = widgets.make_label(official_frametitle, text="Official Sprites")
         official_title_text.pack(side=LEFT)
-        official_local_title_link = Label(official_frametitle, text="(open local)", fg="blue", cursor="hand2")
+        official_local_title_link = widgets.make_label(official_frametitle, text="(open local)", fg="blue", cursor="hand2")
         official_local_title_link.pack(side=LEFT)
         official_local_title_link.bind("<Button-1>", open_official_sprite_dir)
-        official_title_link = Label(official_frametitle, text="(ALttPR)", fg="blue", cursor="hand2")
+        official_title_link = widgets.make_label(official_frametitle, text="(ALttPR)", fg="blue", cursor="hand2")
         official_title_link.pack(side=LEFT)
         official_title_link.bind("<Button-1>", open_official_sprite_listing)
 
-        unofficial_frametitle = Frame(self.window)
-        unofficial_title_text = Label(unofficial_frametitle, text="Unofficial Sprites")
-        unofficial_title_link = Label(unofficial_frametitle, text="(open local)", fg="blue", cursor="hand2")
+        unofficial_frametitle = ttk.Frame(self.window)
+        unofficial_title_text = widgets.make_label(unofficial_frametitle, text="Unofficial Sprites")
+        unofficial_title_link = widgets.make_label(unofficial_frametitle, text="(open local)", fg="blue", cursor="hand2")
         unofficial_title_text.pack(side=LEFT)
         unofficial_title_link.pack(side=LEFT)
         unofficial_title_link.bind("<Button-1>", open_unofficial_sprite_dir)
         # Include hyperlink to SpriteSomething directory for Link sprites
-        spritesomething_title_link = Label(unofficial_frametitle, text="(SpriteSomething)", fg="blue", cursor="hand2")
+        spritesomething_title_link = widgets.make_label(unofficial_frametitle, text="(SpriteSomething)", fg="blue", cursor="hand2")
         spritesomething_title_link.pack(side=LEFT)
         spritesomething_title_link.bind("<Button-1>", open_spritesomething_listing)
 
         self.icon_section(official_frametitle, os.path.join(self.official_sprite_dir,"*"), 'Official sprites not found. Click "Update official sprites" to download them.')
         self.icon_section(unofficial_frametitle, os.path.join(self.unofficial_sprite_dir,"*"), 'Put sprites in the unofficial sprites folder (see open link above) to have them appear here.')
 
-        frame = Frame(self.window)
+        frame = ttk.Frame(self.window)
         frame.pack(side=BOTTOM, fill=X, pady=5)
 
-        button = Button(frame, text="Browse for file...", command=self.browse_for_sprite)
+        button = widgets.make_button(frame, text="Browse for file...", command=self.browse_for_sprite)
         button.pack(side=RIGHT, padx=(5, 0))
 
-        button = Button(frame, text="Update official sprites", command=self.update_official_sprites)
+        button = widgets.make_button(frame, text="Update official sprites", command=self.update_official_sprites)
         button.pack(side=RIGHT, padx=(5, 0))
 
-        button = Button(frame, text="Default Link sprite", command=self.use_default_link_sprite)
+        button = widgets.make_button(frame, text="Default Link sprite", command=self.use_default_link_sprite)
         button.pack(side=LEFT, padx=(0, 5))
 
-        button = Button(frame, text="Random sprite", command=self.use_random_sprite)
+        button = widgets.make_button(frame, text="Random sprite", command=self.use_random_sprite)
         button.pack(side=LEFT, padx=(0, 5))
 
         if adjuster:
-            button = Button(frame, text="Current sprite from rom", command=self.use_default_sprite)
+            button = widgets.make_button(frame, text="Current sprite from rom", command=self.use_default_sprite)
             button.pack(side=LEFT, padx=(0, 5))
 
         set_icon(self.window)
@@ -96,7 +97,7 @@ class SpriteSelector(object):
         canvas = Canvas(frame, borderwidth=0)
         y_scrollbar = Scrollbar(frame, orient="vertical", command=canvas.yview)
         y_scrollbar.pack(side="right", fill="y")
-        content_frame = Frame(canvas)
+        content_frame = ttk.Frame(canvas)
         canvas.pack(side="left", fill="both", expand=True)
         canvas.create_window((4, 4), window=content_frame, anchor="nw")
         canvas.configure(yscrollcommand=y_scrollbar.set)
@@ -121,14 +122,14 @@ class SpriteSelector(object):
             if image is None:
                 continue
             self.all_sprites.append(sprite)
-            button = Button(content_frame, image=image, command=lambda spr=sprite: self.select_sprite(spr))
+            button = widgets.make_button(content_frame, image=image, command=lambda spr=sprite: self.select_sprite(spr))
             ToolTips.register(button, sprite.name + ("\nBy: %s" % sprite.author_name if sprite.author_name else ""))
             button.image = image
             button.grid(row=i // 16, column=i % 16)
             i += 1
 
         if i == 0:
-            label = Label(content_frame, text=no_results_label)
+            label = widgets.make_label(content_frame, text=no_results_label)
             label.pack()
 
     def update_official_sprites(self):

@@ -13,6 +13,10 @@ from source.gui.randomize.multiworld import multiworld_page
 import source.gui.widgets as widgets
 from source.classes.Empty import Empty
 
+global bgcolor
+global fgcolor
+bgcolor = "black"
+fgcolor = "white"
 
 def bottom_frame(self, parent, args=None):
     # Bottom Frame
@@ -35,16 +39,17 @@ def bottom_frame(self, parent, args=None):
     self.widgets[widget].pieces = {}
 
     # frame
-    self.widgets[widget].pieces["frame"] = Frame(self)
+    self.widgets[widget].pieces["frame"] = ttk.Frame(self)
     # frame: label
-    self.widgets[widget].pieces["frame"].label = Label(self.widgets[widget].pieces["frame"], text="Seed #")
+    self.widgets[widget].pieces["frame"].label = widgets.make_label(self.widgets[widget].pieces["frame"], text="Seed #")
     self.widgets[widget].pieces["frame"].label.pack(side=LEFT)
     # storagevar
     savedSeed = parent.settings["seed"]
     self.widgets[widget].storageVar = StringVar(value=savedSeed)
     # textbox
     self.widgets[widget].type = "textbox"
-    self.widgets[widget].pieces["textbox"] = Entry(self.widgets[widget].pieces["frame"], width=15, textvariable=self.widgets[widget].storageVar)
+    self.widgets[widget].pieces["textbox"] = widgets.make_textbox(self.widgets[widget].pieces["frame"], None, self.widgets[widget].storageVar)
+    # self.widgets[widget].pieces["textbox"].configure(background=bgcolor, foreground=fgcolor, insertbackground=fgcolor)
     self.widgets[widget].pieces["textbox"].pack(side=LEFT)
 
     def saveSeed(caller,_,mode):
@@ -141,7 +146,7 @@ def bottom_frame(self, parent, args=None):
 
     # button
     self.widgets[widget].type = "button"
-    self.widgets[widget].pieces["button"] = Button(self, text='Generate Patched Rom', command=generateRom)
+    self.widgets[widget].pieces["button"] = widgets.make_button(self, text='Generate Patched Rom', command=generateRom)
     # button: pack
     self.widgets[widget].pieces["button"].pack(side=LEFT)
 
@@ -165,7 +170,7 @@ def bottom_frame(self, parent, args=None):
 
     # button
     self.widgets[widget].type = "button"
-    self.widgets[widget].pieces["button"] = Button(self, text='Open Output Directory', command=open_output)
+    self.widgets[widget].pieces["button"] = widgets.make_button(self, text='Open Output Directory', command=open_output)
     # button: pack
     self.widgets[widget].pieces["button"].pack(side=RIGHT)
 
@@ -184,7 +189,7 @@ def bottom_frame(self, parent, args=None):
     if os.path.exists(local_path('README.html')):
         def open_readme():
             open_file(local_path('README.html'))
-        self.widgets[widget].pieces["button"] = Button(self, text='Open Documentation', command=open_readme)
+        self.widgets[widget].pieces["button"] = widgets.make_button(self, text='Open Documentation', command=open_readme)
         # button: pack
         self.widgets[widget].pieces["button"].pack(side=RIGHT)
 

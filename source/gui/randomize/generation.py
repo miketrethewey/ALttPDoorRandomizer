@@ -4,7 +4,15 @@ import json
 import os
 from source.classes.Empty import Empty
 
+global bgcolor
+global fgcolor
+bgcolor = "black"
+fgcolor = "white"
+
 def generation_page(parent,settings):
+    global bgcolor
+    global fgcolor
+
     # Generation Setup
     self = ttk.Frame(parent)
 
@@ -13,7 +21,7 @@ def generation_page(parent,settings):
 
     # Generation Setup option sections
     self.frames = {}
-    self.frames["checkboxes"] = Frame(self)
+    self.frames["checkboxes"] = ttk.Frame(self)
     self.frames["checkboxes"].pack(anchor=W)
 
     # Load Generation Setup option widgets as defined by JSON file
@@ -26,7 +34,7 @@ def generation_page(parent,settings):
             self.widgets[key] = dictWidgets[key]
             self.widgets[key].pack(anchor=W)
 
-    self.frames["widgets"] = Frame(self)
+    self.frames["widgets"] = ttk.Frame(self)
     self.frames["widgets"].pack(anchor=W)
     # Load Generation Setup option widgets as defined by JSON file
     # Defns include frame name, widget type, widget options, widget placement attributes
@@ -38,7 +46,7 @@ def generation_page(parent,settings):
             self.widgets[key] = dictWidgets[key]
             self.widgets[key].pack(anchor=W)
 
-    self.frames["baserom"] = Frame(self)
+    self.frames["baserom"] = ttk.Frame(self)
     self.frames["baserom"].pack(anchor=W, fill=X)
     ## Locate base ROM
     # This one's more-complicated, build it and stuff it
@@ -51,13 +59,14 @@ def generation_page(parent,settings):
     self.widgets[widget].pieces = {}
 
     # frame
-    self.widgets[widget].pieces["frame"] = Frame(self.frames["baserom"])
+    self.widgets[widget].pieces["frame"] = ttk.Frame(self.frames["baserom"])
     # frame: label
-    self.widgets[widget].pieces["frame"].label = Label(self.widgets[widget].pieces["frame"], text='Base Rom: ')
+    self.widgets[widget].pieces["frame"].label = widgets.make_label(self.widgets[widget].pieces["frame"], text='Base Rom: ')
     # storage var
     self.widgets[widget].storageVar = StringVar()
     # textbox
-    self.widgets[widget].pieces["textbox"] = Entry(self.widgets[widget].pieces["frame"], textvariable=self.widgets[widget].storageVar)
+    self.widgets[widget].pieces["textbox"] = widgets.make_textbox(self.widgets[widget].pieces["frame"], None, self.widgets[widget].storageVar)
+    # self.widgets[widget].pieces["textbox"].configure(background=bgcolor, foreground=fgcolor, insertbackground=fgcolor)
     self.widgets[widget].storageVar.set(settings["rom"])
 
     # FIXME: Translate these
@@ -65,12 +74,12 @@ def generation_page(parent,settings):
         rom = filedialog.askopenfilename(filetypes=[("Rom Files", (".sfc", ".smc")), ("All Files", "*")], initialdir=os.path.join("."))
         self.widgets[widget].storageVar.set(rom)
     # dialog button
-    self.widgets[widget].pieces["button"] = Button(self.widgets[widget].pieces["frame"], text='Select Rom', command=RomSelect)
+    self.widgets[widget].pieces["button"] = widgets.make_button(self.widgets[widget].pieces["frame"], text='Select Rom', command=RomSelect)
 
     # frame label: pack
     self.widgets[widget].pieces["frame"].label.pack(side=LEFT)
     # textbox: pack
-    self.widgets[widget].pieces["textbox"].pack(side=LEFT, fill=X, expand=True)
+    # self.widgets[widget].pieces["textbox"].pack(side=LEFT, fill=X, expand=True)
     # button: pack
     self.widgets[widget].pieces["button"].pack(side=LEFT)
     # frame: pack

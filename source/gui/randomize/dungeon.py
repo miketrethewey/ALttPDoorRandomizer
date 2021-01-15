@@ -12,11 +12,11 @@ def dungeon_page(parent):
 
     # Dungeon Shuffle option sections
     self.frames = {}
-    self.frames["keysanity"] = Frame(self)
+    self.frames["keysanity"] = ttk.Frame(self)
     self.frames["keysanity"].pack(anchor=W)
 
     ## Dungeon Item Shuffle
-    mscbLabel = Label(self.frames["keysanity"], text="Shuffle: ")
+    mscbLabel = widgets.make_label(self.frames["keysanity"], "Shuffle: ")
     mscbLabel.pack(side=LEFT)
 
     # Load Dungeon Shuffle option widgets as defined by JSON file
@@ -31,7 +31,7 @@ def dungeon_page(parent):
             self.widgets[key].pack(side=LEFT)
 
     # These get split left & right
-    self.frames["widgets"] = Frame(self)
+    self.frames["widgets"] = ttk.Frame(self)
     self.frames["widgets"].pack(anchor=W)
     with open(os.path.join("resources","app","gui","randomize","dungeon","widgets.json")) as dungeonWidgets:
         myDict = json.load(dungeonWidgets)

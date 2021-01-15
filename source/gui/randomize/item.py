@@ -3,7 +3,15 @@ import source.gui.widgets as widgets
 import json
 import os
 
+global bgcolor
+global fgcolor
+bgcolor = "black"
+fgcolor = "white"
+
 def item_page(parent):
+    global bgcolor
+    global fgcolor
+
     # Item Randomizer
     self = ttk.Frame(parent)
 
@@ -14,11 +22,11 @@ def item_page(parent):
     self.frames = {}
 
     # Item Randomizer option frames
-    self.frames["checkboxes"] = Frame(self)
+    self.frames["checkboxes"] = ttk.Frame(self)
     self.frames["checkboxes"].pack(anchor=W)
 
-    self.frames["leftItemFrame"] = Frame(self)
-    self.frames["rightItemFrame"] = Frame(self)
+    self.frames["leftItemFrame"] = ttk.Frame(self)
+    self.frames["rightItemFrame"] = ttk.Frame(self)
     self.frames["leftItemFrame"].pack(side=LEFT)
     self.frames["rightItemFrame"].pack(side=RIGHT)
 

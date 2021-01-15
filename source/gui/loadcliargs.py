@@ -96,7 +96,7 @@ def loadcliargs(gui, args, settings=None):
         gui.pages[mainpage].pages[subpage].widgets[widget].pieces["frame"].label.configure(text=label)
         # set button label
         label = fish.translate("gui","gui",mainpage + '.' + subpage + '.' + widget + ".button")
-        gui.pages[mainpage].pages[subpage].widgets[widget].pieces["button"].configure(text=label)
+#        gui.pages[mainpage].pages[subpage].widgets[widget].pieces["button"].configure(text=label)
 
         # Get Multiworld Worlds count
         mainpage = "bottom"
@@ -146,7 +146,7 @@ def loadcliargs(gui, args, settings=None):
         widget = "go"
         # set textbox/frame label
         label = fish.translate("gui","gui",mainpage + '.' + subpage + '.' + widget)
-        gui.pages[mainpage].pages[subpage].widgets[widget].pieces["button"].configure(text=label)
+#        gui.pages[mainpage].pages[subpage].widgets[widget].pieces["button"].configure(text=label)
 
         # Set Output Directory button
         mainpage = "bottom"
@@ -154,7 +154,7 @@ def loadcliargs(gui, args, settings=None):
         widget = "outputdir"
         # set textbox/frame label
         label = fish.translate("gui","gui",mainpage + '.' + subpage + '.' + widget)
-        gui.pages[mainpage].pages[subpage].widgets[widget].pieces["button"].configure(text=label)
+#        gui.pages[mainpage].pages[subpage].widgets[widget].pieces["button"].configure(text=label)
         # Get output path
         gui.pages[mainpage].pages[subpage].widgets[widget].storageVar.set(args["outputpath"])
 
@@ -166,7 +166,7 @@ def loadcliargs(gui, args, settings=None):
             if "button" in gui.pages[mainpage].pages[subpage].widgets[widget].pieces:
                 # set textbox/frame label
                 label = fish.translate("gui","gui",mainpage + '.' + subpage + '.' + widget)
-                gui.pages[mainpage].pages[subpage].widgets[widget].pieces["button"].configure(text=label)
+#                gui.pages[mainpage].pages[subpage].widgets[widget].pieces["button"].configure(text=label)
 
         # Figure out Sprite Selection
         def sprite_setter(spriteObject):
