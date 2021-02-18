@@ -1,4 +1,4 @@
-from tkinter import ttk, filedialog, messagebox, StringVar, Button, Entry, Frame, Label, E, W, LEFT, RIGHT, X, BOTTOM
+from tkinter import filedialog, StringVar, E, W, LEFT, RIGHT, X, BOTTOM, N
 from AdjusterMain import adjust
 from argparse import Namespace
 from source.classes.SpriteSelector import SpriteSelector
@@ -9,21 +9,21 @@ import os
 
 def adjust_page(top, parent, settings):
     # Adjust page
-    self = ttk.Frame(parent)
+    self = widgets.make_frame(parent)
 
     # Adjust options
     self.widgets = {}
 
     # Adjust option sections
     self.frames = {}
-    self.frames["checkboxes"] = Frame(self)
+    self.frames["checkboxes"] = widgets.make_frame(self)
     self.frames["checkboxes"].pack(anchor=W)
 
     # Adjust option frames
-    self.frames["selectOptionsFrame"] = Frame(self)
-    self.frames["leftAdjustFrame"] = Frame(self.frames["selectOptionsFrame"])
-    self.frames["rightAdjustFrame"] = Frame(self.frames["selectOptionsFrame"])
-    self.frames["bottomAdjustFrame"] = Frame(self)
+    self.frames["selectOptionsFrame"] = widgets.make_frame(self)
+    self.frames["leftAdjustFrame"] = widgets.make_frame(self.frames["selectOptionsFrame"])
+    self.frames["rightAdjustFrame"] = widgets.make_frame(self.frames["selectOptionsFrame"])
+    self.frames["bottomAdjustFrame"] = widgets.make_frame(self)
     self.frames["selectOptionsFrame"].pack(fill=X)
     self.frames["leftAdjustFrame"].pack(side=LEFT)
     self.frames["rightAdjustFrame"].pack(side=RIGHT)
@@ -45,9 +45,10 @@ def adjust_page(top, parent, settings):
     # Sprite Selection
     # This one's more-complicated, build it and stuff it
     self.spriteNameVar2 = StringVar()
-    spriteDialogFrame2 = Frame(self.frames["leftAdjustFrame"])
-    baseSpriteLabel2 = Label(spriteDialogFrame2, text='Sprite:')
-    spriteEntry2 = Label(spriteDialogFrame2, textvariable=self.spriteNameVar2)
+    spriteDialogFrame2 = widgets.make_frame(self.frames["leftAdjustFrame"])
+    baseSpriteLabel2 = widgets.make_label(spriteDialogFrame2, label='Sprite:')
+    spriteEntry2 = widgets.make_textbox(self, spriteDialogFrame2, self.spriteNameVar2, "Sprite:", None, {})
+    # spriteEntry2 = widgets.make_widget(self, "textbox", spriteDialogFrame2, self.spriteNameVar2, "Sprite:", None, {})
     self.sprite = None
 
     def set_sprite(sprite_param, random_sprite=False):
@@ -62,29 +63,40 @@ def adjust_page(top, parent, settings):
     def SpriteSelectAdjuster():
         SpriteSelector(parent, set_sprite, adjuster=True)
 
-    spriteSelectButton2 = Button(spriteDialogFrame2, text='...', command=SpriteSelectAdjuster)
+    spriteSelectButton2 = widgets.make_button(spriteDialogFrame2, label='...', command=SpriteSelectAdjuster)
 
     baseSpriteLabel2.pack(side=LEFT)
-    spriteEntry2.pack(side=LEFT)
+    # spriteEntry2.pack(side=LEFT)
     spriteSelectButton2.pack(side=LEFT)
     spriteDialogFrame2.pack(anchor=E)
 
     # Path to game file to Adjust
     # This one's more-complicated, build it and stuff it
-    adjustRomFrame = Frame(self.frames["bottomAdjustFrame"])
-    adjustRomLabel = Label(adjustRomFrame, text='Rom to adjust: ')
+    label = "Rom to adjust:"
+    adjustRomFrame = widgets.make_frame(self.frames["bottomAdjustFrame"])
     self.romVar2 = StringVar(value=settings["rom"])
-    romEntry2 = Entry(adjustRomFrame, textvariable=self.romVar2)
+    romEntry2 = widgets.make_widget(
+      self,
+      "textbox",
+      adjustRomFrame,
+      label,
+      self.romVar2,
+      "pack",
+      {
+        "label": {"side": LEFT, "anchor": N},
+        "textbox": {"side": LEFT, "anchor": N, "fill": X, "expand": True},
+        "entry": {"justify": LEFT}
+      }
+    )
 
     def RomSelect2():
         rom = filedialog.askopenfilename(filetypes=[("Rom Files", (".sfc", ".smc")), ("All Files", "*")])
         if rom:
             settings["rom"] = rom
             self.romVar2.set(rom)
-    romSelectButton2 = Button(adjustRomFrame, text='Select Rom', command=RomSelect2)
+    romSelectButton2 = widgets.make_button(adjustRomFrame, label='Select Rom', command=RomSelect2)
 
-    adjustRomLabel.pack(side=LEFT)
-    romEntry2.pack(side=LEFT, fill=X, expand=True)
+    # romEntry2.pack(side=LEFT, fill=X, expand=True)
     romSelectButton2.pack(side=LEFT)
     adjustRomFrame.pack(fill=X)
 
@@ -110,11 +122,11 @@ def adjust_page(top, parent, settings):
             adjust(args=guiargs)
         except Exception as e:
             logging.exception(e)
-            messagebox.showerror(title="Error while creating seed", message=str(e))
+            widgets.make_messagebox.showerror(type="error", title="Error while creating seed", body=str(e))
         else:
-            messagebox.showinfo(title="Success", message="Rom patched successfully")
+            widgets.make_messagebox(type="info", title="Success", body="Rom patched successfully")
 
-    adjustButton = Button(self.frames["bottomAdjustFrame"], text='Adjust Rom', command=adjustRom)
+    adjustButton = widgets.make_button(self.frames["bottomAdjustFrame"], label='Adjust Rom', command=adjustRom)
     adjustButton.pack(side=BOTTOM, padx=(5, 0))
 
     return self,settings

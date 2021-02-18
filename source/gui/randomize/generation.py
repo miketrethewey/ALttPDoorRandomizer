@@ -1,4 +1,4 @@
-from tkinter import ttk, filedialog, StringVar, Button, Entry, Frame, Label, E, W, LEFT, X, Text, Tk, INSERT
+from tkinter import filedialog, StringVar, E, W, LEFT, X, Text, Tk, INSERT, N
 import source.classes.diags as diagnostics
 import source.gui.widgets as widgets
 import json
@@ -9,14 +9,14 @@ from Main import __version__
 
 def generation_page(parent,settings):
     # Generation Setup
-    self = ttk.Frame(parent)
+    self = widgets.make_frame(parent)
 
     # Generation Setup options
     self.widgets = {}
 
     # Generation Setup option sections
     self.frames = {}
-    self.frames["checkboxes"] = Frame(self)
+    self.frames["checkboxes"] = widgets.make_frame(self)
     self.frames["checkboxes"].pack(anchor=W)
 
     # Load Generation Setup option widgets as defined by JSON file
@@ -29,7 +29,7 @@ def generation_page(parent,settings):
             self.widgets[key] = dictWidgets[key]
             self.widgets[key].pack(anchor=W)
 
-    self.frames["widgets"] = Frame(self)
+    self.frames["widgets"] = widgets.make_frame(self)
     self.frames["widgets"].pack(anchor=W)
     # Load Generation Setup option widgets as defined by JSON file
     # Defns include frame name, widget type, widget options, widget placement attributes
@@ -41,12 +41,13 @@ def generation_page(parent,settings):
             self.widgets[key] = dictWidgets[key]
             self.widgets[key].pack(anchor=W)
 
-    self.frames["baserom"] = Frame(self)
+    self.frames["baserom"] = widgets.make_frame(self)
     self.frames["baserom"].pack(anchor=W, fill=X)
     ## Locate base ROM
     # This one's more-complicated, build it and stuff it
     # widget ID
     widget = "rom"
+    label = "Base Rom:"
 
     # Empty object
     self.widgets[widget] = Empty()
@@ -54,13 +55,25 @@ def generation_page(parent,settings):
     self.widgets[widget].pieces = {}
 
     # frame
-    self.widgets[widget].pieces["frame"] = Frame(self.frames["baserom"])
-    # frame: label
-    self.widgets[widget].pieces["frame"].label = Label(self.widgets[widget].pieces["frame"], text='Base Rom: ')
+    self.widgets[widget].pieces["frame"] = widgets.make_frame(self.frames["baserom"])
+
     # storage var
     self.widgets[widget].storageVar = StringVar()
     # textbox
-    self.widgets[widget].pieces["textbox"] = Entry(self.widgets[widget].pieces["frame"], textvariable=self.widgets[widget].storageVar)
+    self.widgets[widget].type = "textbox"
+    self.widgets[widget].pieces["textbox"] = widgets.make_widget(
+      self,
+      self.widgets[widget].type,
+      self.widgets[widget].pieces["frame"],
+      label,
+      self.widgets[widget].storageVar,
+      "pack",
+      {
+        "label": {"side": LEFT, "anchor": N},
+        "textbox": {"side": LEFT, "anchor": N, "fill": X, "expand": True},
+        "entry": {"justify": LEFT}
+      }
+    )
     self.widgets[widget].storageVar.set(settings["rom"])
 
     # FIXME: Translate these
@@ -68,12 +81,10 @@ def generation_page(parent,settings):
         rom = filedialog.askopenfilename(filetypes=[("Rom Files", (".sfc", ".smc")), ("All Files", "*")], initialdir=os.path.join("."))
         self.widgets[widget].storageVar.set(rom)
     # dialog button
-    self.widgets[widget].pieces["button"] = Button(self.widgets[widget].pieces["frame"], text='Select Rom', command=RomSelect)
+    self.widgets[widget].pieces["button"] = widgets.make_button(self.widgets[widget].pieces["frame"], label='Select Rom', command=RomSelect)
 
-    # frame label: pack
-    self.widgets[widget].pieces["frame"].label.pack(side=LEFT)
     # textbox: pack
-    self.widgets[widget].pieces["textbox"].pack(side=LEFT, fill=X, expand=True)
+    # self.widgets[widget].pieces["textbox"].pack(side=LEFT, fill=X, expand=True)
     # button: pack
     self.widgets[widget].pieces["button"].pack(side=LEFT)
     # frame: pack
@@ -90,9 +101,9 @@ def generation_page(parent,settings):
     self.widgets[widget].pieces = {}
 
     # frame
-    self.frames["diags"] = Frame(self)
+    self.frames["diags"] = widgets.make_frame(self)
     self.frames["diags"].pack()
-    self.widgets[widget].pieces["frame"] = Frame(self.frames["diags"])
+    self.widgets[widget].pieces["frame"] = widgets.make_frame(self.frames["diags"])
 
 
     def diags():
@@ -106,7 +117,7 @@ def generation_page(parent,settings):
                 "width": 120,
                 "height": 50
             }
-		    }
+        }
         diag = Tk()
         diag.title("Door Shuffle " + __version__)
         diag.geometry(str(dims["window"]["width"]) + 'x' + str(dims["window"]["height"]))
@@ -114,7 +125,7 @@ def generation_page(parent,settings):
         text.pack()
         text.insert(INSERT,"\n".join(diagnostics.output(__version__)))
     # dialog button
-    self.widgets[widget].pieces["button"] = Button(self.widgets[widget].pieces["frame"], text='Run Diagnostics', command=partial(diags))
+    self.widgets[widget].pieces["button"] = widgets.make_button(self.widgets[widget].pieces["frame"], label='Run Diagnostics', command=partial(diags))
 
     # button: pack
     self.widgets[widget].pieces["button"].pack(side=LEFT)

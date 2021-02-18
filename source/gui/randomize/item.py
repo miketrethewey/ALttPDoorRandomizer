@@ -1,11 +1,11 @@
-from tkinter import ttk, Frame, E, W, LEFT, RIGHT
+from tkinter import E, W, LEFT, RIGHT
 import source.gui.widgets as widgets
 import json
 import os
 
 def item_page(parent):
     # Item Randomizer
-    self = ttk.Frame(parent)
+    self = widgets.make_frame(parent)
 
     # Item Randomizer options
     self.widgets = {}
@@ -14,11 +14,11 @@ def item_page(parent):
     self.frames = {}
 
     # Item Randomizer option frames
-    self.frames["checkboxes"] = Frame(self)
+    self.frames["checkboxes"] = widgets.make_frame(self)
     self.frames["checkboxes"].pack(anchor=W)
 
-    self.frames["leftItemFrame"] = Frame(self)
-    self.frames["rightItemFrame"] = Frame(self)
+    self.frames["leftItemFrame"] = widgets.make_frame(self)
+    self.frames["rightItemFrame"] = widgets.make_frame(self)
     self.frames["leftItemFrame"].pack(side=LEFT)
     self.frames["rightItemFrame"].pack(side=RIGHT)
 

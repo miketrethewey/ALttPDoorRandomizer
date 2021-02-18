@@ -1,4 +1,4 @@
-from tkinter import ttk, messagebox, StringVar, Button, Entry, Frame, Label, E, W, LEFT, RIGHT, X
+from tkinter import StringVar, E, W, LEFT, RIGHT, X
 from argparse import Namespace
 import logging
 import os
@@ -16,7 +16,7 @@ from source.classes.Empty import Empty
 
 def bottom_frame(self, parent, args=None):
     # Bottom Frame
-    self = ttk.Frame(parent)
+    self = widgets.make_frame(parent)
 
     # Bottom Frame options
     self.widgets = {}
@@ -28,6 +28,7 @@ def bottom_frame(self, parent, args=None):
     # Seed input
     # widget ID
     widget = "seed"
+    label = "Seed #"
 
     # Empty object
     self.widgets[widget] = Empty()
@@ -35,17 +36,25 @@ def bottom_frame(self, parent, args=None):
     self.widgets[widget].pieces = {}
 
     # frame
-    self.widgets[widget].pieces["frame"] = Frame(self)
-    # frame: label
-    self.widgets[widget].pieces["frame"].label = Label(self.widgets[widget].pieces["frame"], text="Seed #")
-    self.widgets[widget].pieces["frame"].label.pack(side=LEFT)
+    self.widgets[widget].pieces["frame"] = widgets.make_frame(self)
     # storagevar
     savedSeed = parent.settings["seed"]
     self.widgets[widget].storageVar = StringVar(value=savedSeed)
     # textbox
     self.widgets[widget].type = "textbox"
-    self.widgets[widget].pieces["textbox"] = Entry(self.widgets[widget].pieces["frame"], width=15, textvariable=self.widgets[widget].storageVar)
-    self.widgets[widget].pieces["textbox"].pack(side=LEFT)
+    self.widgets[widget].pieces["widget"] = widgets.make_widget(
+      self,
+      self.widgets[widget].type,
+      self,
+      label,
+      self.widgets[widget].storageVar,
+      "pack",
+      {
+        "label": {"side": LEFT},
+        "textbox": {"side": LEFT},
+        "entry": {"width": 15}
+        }
+      )
 
     def saveSeed(caller,_,mode):
         savedSeed = self.widgets["seed"].storageVar.get()
@@ -107,7 +116,7 @@ def bottom_frame(self, parent, args=None):
                     main(seed=guiargs.seed, args=guiargs, fish=parent.fish)
             except (FillError, EnemizerError, Exception, RuntimeError) as e:
                 logging.exception(e)
-                messagebox.showerror(title="Error while creating seed", message=str(e))
+                widgets.messagebox(type="error", title="Error while creating seed", body=str(e))
             else:
                 YES = parent.fish.translate("cli","cli","yes")
                 NO = parent.fish.translate("cli","cli","no")
@@ -128,7 +137,7 @@ def bottom_frame(self, parent, args=None):
                 # FIXME: English
                 successMsg += ("Seed%s: %s" % ('s' if len(seeds) > 1 else "", ','.join(str(x) for x in seeds)))
 
-                messagebox.showinfo(title="Success", message=successMsg)
+                widgets.make_messagebox(type="info", title="Success", body=successMsg)
 
     ## Generate Button
     # widget ID
@@ -141,7 +150,7 @@ def bottom_frame(self, parent, args=None):
 
     # button
     self.widgets[widget].type = "button"
-    self.widgets[widget].pieces["button"] = Button(self, text='Generate Patched Rom', command=generateRom)
+    self.widgets[widget].pieces["button"] = widgets.make_button(self, label='Generate Patched Rom', command=generateRom)
     # button: pack
     self.widgets[widget].pieces["button"].pack(side=LEFT)
 
@@ -165,7 +174,7 @@ def bottom_frame(self, parent, args=None):
 
     # button
     self.widgets[widget].type = "button"
-    self.widgets[widget].pieces["button"] = Button(self, text='Open Output Directory', command=open_output)
+    self.widgets[widget].pieces["button"] = widgets.make_button(self, label='Open Output Directory', command=open_output)
     # button: pack
     self.widgets[widget].pieces["button"].pack(side=RIGHT)
 
@@ -184,7 +193,7 @@ def bottom_frame(self, parent, args=None):
     if os.path.exists(local_path('README.html')):
         def open_readme():
             open_file(local_path('README.html'))
-        self.widgets[widget].pieces["button"] = Button(self, text='Open Documentation', command=open_readme)
+        self.widgets[widget].pieces["button"] = widgets.make_button(self, label='Open Documentation', command=open_readme)
         # button: pack
         self.widgets[widget].pieces["button"].pack(side=RIGHT)
 

@@ -79,7 +79,7 @@ def loadcliargs(gui, args, settings=None):
         gui.pages[mainpage].pages[subpage].widgets[widget].storageVar.set(args[setting])
         # set textbox/frame label
         label = fish.translate("gui","gui",mainpage + '.' + subpage + '.' + widget)
-        gui.pages[mainpage].pages[subpage].widgets[widget].pieces["frame"].label.configure(text=label)
+        # gui.pages[mainpage].pages[subpage].widgets[widget].pieces["frame"].label.configure(text=label)
         # set get from web label
         label = fish.translate("gui","gui",mainpage + '.' + subpage + '.' + widget + ".online")
         gui.pages[mainpage].pages[subpage].widgets[widget].pieces["online"].label.configure(text=label)
@@ -93,7 +93,7 @@ def loadcliargs(gui, args, settings=None):
         gui.pages[mainpage].pages[subpage].widgets[widget].storageVar.set(args[setting])
         # set textbox/frame label
         label = fish.translate("gui","gui",mainpage + '.' + subpage + '.' + widget)
-        gui.pages[mainpage].pages[subpage].widgets[widget].pieces["frame"].label.configure(text=label)
+        # gui.pages[mainpage].pages[subpage].widgets[widget].pieces["frame"].label.configure(text=label)
         # set button label
         label = fish.translate("gui","gui",mainpage + '.' + subpage + '.' + widget + ".button")
         gui.pages[mainpage].pages[subpage].widgets[widget].pieces["button"].configure(text=label)
@@ -116,7 +116,7 @@ def loadcliargs(gui, args, settings=None):
         widget = "names"
         # set textbox/frame label
         label = fish.translate("gui","gui",mainpage + '.' + subpage + '.' + widget)
-        gui.pages[mainpage].pages[subpage].widgets[widget].pieces["frame"].label.configure(text=label)
+        # gui.pages[mainpage].pages[subpage].widgets[widget].pieces["frame"].label.configure(text=label)
 
         # Get Seed ID
         mainpage = "bottom"
@@ -127,7 +127,7 @@ def loadcliargs(gui, args, settings=None):
             gui.pages[mainpage].pages[subpage].widgets[widget].storageVar.set(args[setting])
         # set textbox/frame label
         label = fish.translate("gui","gui",mainpage + '.' + subpage + '.' + widget)
-        gui.pages[mainpage].pages[subpage].widgets[widget].pieces["frame"].label.configure(text=label)
+        # gui.pages[mainpage].pages[subpage].widgets[widget].pieces["frame"].label.configure(text=label)
 
         # Get number of generations to run
         mainpage = "bottom"

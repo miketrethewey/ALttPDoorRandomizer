@@ -1,5 +1,33 @@
-from tkinter import Checkbutton, Entry, Frame, IntVar, Label, OptionMenu, Spinbox, StringVar, LEFT, RIGHT, X
+from tkinter import Tk, ttk, messagebox, Button, Checkbutton, Entry, Frame, IntVar, Label, OptionMenu, Spinbox, StringVar, LEFT, RIGHT
 from source.classes.Empty import Empty
+
+#################
+# Tkinter notes #
+#################
+# Window, main app window; "Tk"
+# Frame, area; "Frame"
+# Notebook, tabbed interface; "Notebook"
+# Button; "Button"
+# Checkbox, boolean on/off'; "Checkbutton"
+#  Frame
+# Selectbox, list of menu options; "OptionMenu"
+#  Frame
+#  Label
+#  Align LEFT
+#  Align RIGHT
+# Spinbox, scrollable numeric value; "Spinbox"
+#  Frame
+#  Label
+#  Align LEFT
+#  Align RIGHT
+# Textbox; "Entry"
+#  Label
+#  Align RIGHT
+# Generic widget
+#  IntVar
+#  StringVar
+# Single widget from dict()
+# Multiple widgets from dict()
 
 # Override Spinbox to include mousewheel support for changing value
 class mySpinbox(Spinbox):
@@ -14,6 +42,38 @@ class mySpinbox(Spinbox):
             self.invoke('buttondown')
         elif event.num == 4 or event.delta == 120:
             self.invoke('buttonup')
+
+# Make a Window
+def make_window():
+    return Tk()
+
+# Make a Frame
+def make_frame(parent):
+    return ttk.Frame(parent)
+
+# Make a messagebox
+def make_messagebox(type="info", title="", body=""):
+    if type == "info":
+        return messagebox.showinfo(title, body)
+    elif type == "error":
+        return messagebox.showerror(title, body)
+    elif type == "yesnocancel":
+        return messagebox.askyesnocancel(title, body)
+
+# Make a Notebook
+def make_notebook(parent):
+    return ttk.Notebook(parent)
+
+# Make a Notebook page
+def make_notebook_page(notebook, page, label):
+    notebook.add(page, text=label)
+
+# Make a Button
+def make_button(parent, label, command):
+    return Button(parent, text=label, command=command)
+
+def make_label(parent, label):
+    return Label(parent, text=label)
 
 # Make a Checkbutton with a label
 def make_checkbox(self, parent, label, storageVar, manager, managerAttrs):
@@ -89,7 +149,7 @@ def make_selectbox(self, parent, label, options, storageVar, manager, managerAtt
 
     self.storageVar.trace_add("write",change_selected)
     self.labelVar.trace_add("write",change_storage)
-    self.label = Label(self, text=label)
+    self.label = make_label(self, label)
 
     if managerAttrs is not None and "label" in managerAttrs:
         self.label.pack(managerAttrs["label"])
@@ -120,7 +180,7 @@ def make_selectbox(self, parent, label, options, storageVar, manager, managerAtt
 def make_spinbox(self, parent, label, storageVar, manager, managerAttrs):
     self = Frame(parent)
     self.storageVar = storageVar
-    self.label = Label(self, text=label)
+    self.label = make_label(self, label)
     if managerAttrs is not None and "label" in managerAttrs:
         self.label.pack(managerAttrs["label"])
     else:
@@ -144,8 +204,15 @@ def make_spinbox(self, parent, label, storageVar, manager, managerAttrs):
 def make_textbox(self, parent, label, storageVar, manager, managerAttrs):
     widget = Empty()
     widget.storageVar = storageVar
-    widget.label = Label(parent, text=label)
-    widget.textbox = Entry(parent, justify=RIGHT, textvariable=widget.storageVar, width=3)
+    widget.label = make_label(parent, label)
+    widget.textbox = Entry(
+      parent,
+      textvariable=widget.storageVar,
+      width=managerAttrs["entry"]["width"] if managerAttrs is not None and "entry" in managerAttrs and "width" in managerAttrs["entry"] else 3
+    )
+    if managerAttrs is not None and "entry" in managerAttrs and "justify" in managerAttrs["entry"]:
+        widget.textbox.configure(justify=managerAttrs["entry"]["justify"])
+        del managerAttrs["entry"]["justify"]
     if "default" in managerAttrs:
         widget.storageVar.set(managerAttrs["default"])
 
@@ -161,8 +228,8 @@ def make_textbox(self, parent, label, storageVar, manager, managerAttrs):
 
     # pack
     elif manager == "pack":
-        widget.label.pack(managerAttrs["label"] if managerAttrs is not None and "label" in managerAttrs else None)
-        widget.textbox.pack(managerAttrs["textbox"] if managerAttrs is not None and "textbox" in managerAttrs else None)
+        widget.label.pack(managerAttrs["label"] if managerAttrs is not None and "label" in managerAttrs else dict())
+        widget.textbox.pack(managerAttrs["textbox"] if managerAttrs is not None and "textbox" in managerAttrs else dict())
     return widget
 
 # Make a generic widget

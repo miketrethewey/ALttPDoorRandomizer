@@ -2,7 +2,9 @@
 import json
 import os
 import sys
-from tkinter import Tk, Button, BOTTOM, TOP, StringVar, BooleanVar, X, BOTH, RIGHT, ttk, messagebox
+from tkinter import BOTTOM, StringVar, BooleanVar, X, Y, RIGHT
+
+import source.gui.widgets as widgets
 
 from CLI import get_args_priority
 from DungeonRandomizer import parse_cli
@@ -23,6 +25,15 @@ from Main import __version__ as ESVersion
 
 from source.classes.BabelFish import BabelFish
 from source.classes.Empty import Empty
+
+#################
+# Tkinter notes #
+#################
+# Bottom frame uses BOTTOM and fills X
+# self.outputpath uses StringVar
+# self.randomSprite uses BooleanVar
+# Notebook pages fill Y
+# Save Settings on exit Button aligns RIGHT
 
 
 def guiMain(args=None):
@@ -47,13 +58,13 @@ def guiMain(args=None):
             gui_args['sprite'] = gui_args['sprite'].name
         save_settings(gui_args)
         if confirm:
-            messagebox.showinfo("Door Shuffle " + ESVersion, "Settings saved from GUI.")
+            widgets.make_messagebox(type="info", title="Door Shuffle " + ESVersion, body="Settings saved from GUI.")
 
     # routine for exiting the app
     def guiExit():
         skip_exit = False
         if self.settings['saveonexit'] == 'ask':
-            dosave = messagebox.askyesnocancel("Door Shuffle " + ESVersion, "Save settings before exit?")
+            dosave = widgets.make_messagebox(type="yesnocancel", title="Door Shuffle " + ESVersion, body="Settings saved from GUI.")
             if dosave:
                 save_settings_from_gui(True)
             if dosave is None:
@@ -65,7 +76,7 @@ def guiMain(args=None):
 
     # make main window
     # add program title & version number
-    mainWindow = Tk()
+    mainWindow = widgets.make_window()
     self = mainWindow
 
     mainWindow.wm_title("Door Shuffle %s" % ESVersion)
@@ -92,15 +103,15 @@ def guiMain(args=None):
     self.frames = {}
 
     # make pages for each section
-    self.notebook = ttk.Notebook(self)
-    self.pages["randomizer"] = ttk.Frame(self.notebook)
-    self.pages["adjust"] = ttk.Frame(self.notebook)
-    self.pages["startinventory"] = ttk.Frame(self.notebook)
-    self.pages["custom"] = ttk.Frame(self.notebook)
-    self.notebook.add(self.pages["randomizer"], text='Randomize')
-    self.notebook.add(self.pages["adjust"], text='Adjust')
-    self.notebook.add(self.pages["startinventory"], text='Starting Inventory')
-    self.notebook.add(self.pages["custom"], text='Custom Item Pool')
+    self.notebook = widgets.make_notebook(self)
+    self.pages["randomizer"] = widgets.make_frame(self.notebook)
+    self.pages["adjust"] = widgets.make_frame(self.notebook)
+    self.pages["startinventory"] = widgets.make_frame(self.notebook)
+    self.pages["custom"] = widgets.make_frame(self.notebook)
+    widgets.make_notebook_page(self.notebook, self.pages["randomizer"], label='Randomize')
+    widgets.make_notebook_page(self.notebook, self.pages["adjust"], label='Adjust')
+    widgets.make_notebook_page(self.notebook, self.pages["startinventory"], label='Starting Inventory')
+    widgets.make_notebook_page(self.notebook, self.pages["custom"], label='Custom Item Pool')
     self.notebook.pack()
 
     # randomizer controls
@@ -114,38 +125,38 @@ def guiMain(args=None):
     #   Multiworld:       Multiworld settings
     #   Game Options:     Cosmetic settings that don't affect logic/placement
     #   Generation Setup: Primarily one&done settings
-    self.pages["randomizer"].notebook = ttk.Notebook(self.pages["randomizer"])
+    self.pages["randomizer"].notebook = widgets.make_notebook(self.pages["randomizer"])
 
     # make array for pages
     self.pages["randomizer"].pages = {}
 
     # Item Randomizer
     self.pages["randomizer"].pages["item"] = item_page(self.pages["randomizer"].notebook)
-    self.pages["randomizer"].notebook.add(self.pages["randomizer"].pages["item"], text="Items")
+    widgets.make_notebook_page(self.pages["randomizer"].notebook, self.pages["randomizer"].pages["item"], label="Items")
 
     # Entrance Randomizer
     self.pages["randomizer"].pages["entrance"] = entrando_page(self.pages["randomizer"].notebook)
-    self.pages["randomizer"].notebook.add(self.pages["randomizer"].pages["entrance"], text="Entrances")
+    widgets.make_notebook_page(self.pages["randomizer"].notebook, self.pages["randomizer"].pages["entrance"], label="Entrances")
 
     # Enemizer
     self.pages["randomizer"].pages["enemizer"],self.settings = enemizer_page(self.pages["randomizer"].notebook,self.settings)
-    self.pages["randomizer"].notebook.add(self.pages["randomizer"].pages["enemizer"], text="Enemizer")
+    widgets.make_notebook_page(self.pages["randomizer"].notebook, self.pages["randomizer"].pages["enemizer"], label="Enemizer")
 
     # Dungeon Shuffle
     self.pages["randomizer"].pages["dungeon"] = dungeon_page(self.pages["randomizer"].notebook)
-    self.pages["randomizer"].notebook.add(self.pages["randomizer"].pages["dungeon"], text="Dungeon Shuffle")
+    widgets.make_notebook_page(self.pages["randomizer"].notebook, self.pages["randomizer"].pages["dungeon"], label="Dungeon Shuffle")
 
     # Multiworld
 #    self.pages["randomizer"].pages["multiworld"],self.settings = multiworld_page(self.pages["randomizer"].notebook,self.settings)
-#    self.pages["randomizer"].notebook.add(self.pages["randomizer"].pages["multiworld"], text="Multiworld")
+#    widgets.make_notebook_page(self.pages["randomizer"].notebook, self.pages["randomizer"].pages["multiworld"], label="Multiworld")
 
     # Game Options
     self.pages["randomizer"].pages["gameoptions"] = gameoptions_page(self, self.pages["randomizer"].notebook)
-    self.pages["randomizer"].notebook.add(self.pages["randomizer"].pages["gameoptions"], text="Game Options")
+    widgets.make_notebook_page(self.pages["randomizer"].notebook, self.pages["randomizer"].pages["gameoptions"], label="Game Options")
 
     # Generation Setup
     self.pages["randomizer"].pages["generation"],self.settings = generation_page(self.pages["randomizer"].notebook,self.settings)
-    self.pages["randomizer"].notebook.add(self.pages["randomizer"].pages["generation"], text="Generation Setup")
+    widgets.make_notebook_page(self.pages["randomizer"].notebook, self.pages["randomizer"].pages["generation"], label="Generation Setup")
 
     # add randomizer notebook to main window
     self.pages["randomizer"].notebook.pack()
@@ -155,7 +166,7 @@ def guiMain(args=None):
     self.pages["bottom"].pages = {}
     self.pages["bottom"].pages["content"] = bottom_frame(self, self, None)
     ## Save Settings Button
-    savesettingsButton = Button(self.pages["bottom"].pages["content"], text='Save Settings to File', command=lambda: save_settings_from_gui(True))
+    savesettingsButton = widgets.make_button(self.pages["bottom"].pages["content"], label='Save Settings to File', command=lambda: save_settings_from_gui(True))
     savesettingsButton.pack(side=RIGHT)
 
     # set bottom frame to main window
@@ -166,15 +177,15 @@ def guiMain(args=None):
 
     # Adjuster Controls
     self.pages["adjust"].content,self.settings = adjust_page(self, self.pages["adjust"], self.settings)
-    self.pages["adjust"].content.pack(side=TOP, fill=BOTH, expand=True)
+    self.pages["adjust"].content.pack(fill=Y, expand=True)
 
     # Starting Inventory Controls
     self.pages["startinventory"].content = startinventory_page(self, self.pages["startinventory"])
-    self.pages["startinventory"].content.pack(side=TOP, fill=BOTH, expand=True)
+    self.pages["startinventory"].content.pack(fill=Y, expand=True)
 
     # Custom Controls
     self.pages["custom"].content = custom_page(self,self.pages["custom"])
-    self.pages["custom"].content.pack(side=TOP, fill=BOTH, expand=True)
+    self.pages["custom"].content.pack(fill=Y, expand=True)
 
     def validation(P):
         if str.isdigit(P) or P == "":

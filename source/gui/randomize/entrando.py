@@ -1,18 +1,18 @@
-from tkinter import ttk, Frame, E, W, LEFT, RIGHT
+from tkinter import E, W, LEFT, RIGHT
 import source.gui.widgets as widgets
 import json
 import os
 
 def entrando_page(parent):
     # Entrance Randomizer
-    self = ttk.Frame(parent)
+    self = widgets.make_frame(parent)
 
     # Entrance Randomizer options
     self.widgets = {}
 
     # Entrance Randomizer option sections
     self.frames = {}
-    self.frames["widgets"] = Frame(self)
+    self.frames["widgets"] = widgets.make_frame(self)
     self.frames["widgets"].pack(anchor=W)
 
     # Load Entrance Randomizer option widgets as defined by JSON file

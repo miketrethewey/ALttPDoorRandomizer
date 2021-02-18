@@ -336,15 +336,15 @@ def update_deprecated_args(args):
             else:
                 args.no_hints = args.hints not in truthy  # dest = !src
 
-        # Spoiler defaults to FALSE
-        # Don't do: No
-        # Do:       Yes
-        if "create_spoiler" in argVars:
-            args.suppress_spoiler = not args.create_spoiler in truthy
+        # Spoiler defaults to TRUE
         # Don't do: Yes
         # Do:       No
         if "suppress_spoiler" in argVars:
             args.create_spoiler = not args.suppress_spoiler in truthy
+        # Don't do: No
+        # Do:       Yes
+        if "create_spoiler" in argVars:
+            args.suppress_spoiler = not args.create_spoiler in truthy
 
         # ROM defaults to TRUE
         # Don't do: Yes
@@ -655,4 +655,3 @@ if __name__ == '__main__':
     # room_palette_data(old_rom=sys.argv[1])
     # extract_data_from_us_rom(sys.argv[1])
     extract_data_from_jp_rom(sys.argv[1])
-

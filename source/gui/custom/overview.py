@@ -1,4 +1,4 @@
-from tkinter import ttk, Frame, N, E, W, LEFT, X, VERTICAL, Y
+from tkinter import ttk, N, E, W, LEFT, X, VERTICAL, Y
 import source.gui.widgets as widgets
 import json
 import os
@@ -7,11 +7,11 @@ import source.classes.constants as CONST
 
 def custom_page(top,parent):
     # Custom Item Pool
-    self = ttk.Frame(parent)
+    self = widgets.make_frame(parent)
 
     # Create uniform list columns
     def create_list_frame(parent, framename):
-        parent.frames[framename] = Frame(parent)
+        parent.frames[framename] = widgets.make_frame(parent)
         parent.frames[framename].pack(side=LEFT, padx=(0,0), anchor=N)
         parent.frames[framename].thisRow = 0
         parent.frames[framename].thisCol = 0

@@ -1,4 +1,4 @@
-from tkinter import ttk, StringVar, Button, Entry, Frame, Label, E, W, LEFT, RIGHT
+from tkinter import StringVar, E, W, LEFT, RIGHT
 from functools import partial
 import source.classes.SpriteSelector as spriteSelector
 import source.gui.widgets as widgets
@@ -7,19 +7,19 @@ import os
 
 def gameoptions_page(top, parent):
     # Game Options
-    self = ttk.Frame(parent)
+    self = widgets.make_frame(parent)
 
     # Game Options options
     self.widgets = {}
 
     # Game Options option sections
     self.frames = {}
-    self.frames["checkboxes"] = Frame(self)
+    self.frames["checkboxes"] = widgets.make_frame(self)
     self.frames["checkboxes"].pack(anchor=W)
 
     # Game Options frames
-    self.frames["leftRomOptionsFrame"] = Frame(self)
-    self.frames["rightRomOptionsFrame"] = Frame(self)
+    self.frames["leftRomOptionsFrame"] = widgets.make_frame(self)
+    self.frames["rightRomOptionsFrame"] = widgets.make_frame(self)
     self.frames["leftRomOptionsFrame"].pack(side=LEFT)
     self.frames["rightRomOptionsFrame"].pack(side=RIGHT)
 
@@ -41,15 +41,16 @@ def gameoptions_page(top, parent):
 
     ## Sprite selection
     # This one's more-complicated, build it and stuff it
-    spriteDialogFrame = Frame(self.frames["leftRomOptionsFrame"])
-    baseSpriteLabel = Label(spriteDialogFrame, text='Sprite:')
+    spriteDialogFrame = widgets.make_frame(self.frames["leftRomOptionsFrame"])
+    baseSpriteLabel = widgets.make_label(spriteDialogFrame, label='Sprite:')
 
     self.widgets["sprite"] = {}
     self.widgets["sprite"]["spriteObject"] = None
     self.widgets["sprite"]["spriteNameVar"] = StringVar()
 
     self.widgets["sprite"]["spriteNameVar"].set('(unchanged)')
-    spriteEntry = Label(spriteDialogFrame, textvariable=self.widgets["sprite"]["spriteNameVar"])
+    spriteEntry = widgets.make_textbox(self, spriteDialogFrame, self.widgets["sprite"]["spriteNameVar"], "Sprite:", None, {})
+    # spriteEntry = widgets.make_widget(self, "textbox", spriteDialogFrame, self.widgets["sprite"]["spriteNameVar"], "Sprite:", None, {})
 
     def sprite_setter(spriteObject):
         self.widgets["sprite"]["spriteObject"] = spriteObject
@@ -59,10 +60,10 @@ def gameoptions_page(top, parent):
                                                       spriteNameVar=self.widgets["sprite"]["spriteNameVar"],
                                                       randomSpriteVar=top.randomSprite))
 
-    spriteSelectButton = Button(spriteDialogFrame, text='...', command=sprite_select)
+    spriteSelectButton = widgets.make_button(spriteDialogFrame, label='...', command=sprite_select)
 
     baseSpriteLabel.pack(side=LEFT)
-    spriteEntry.pack(side=LEFT)
+    # spriteEntry.pack(side=LEFT)
     spriteSelectButton.pack(side=LEFT)
     spriteDialogFrame.pack(anchor=E)
 
