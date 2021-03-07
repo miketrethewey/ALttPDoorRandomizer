@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import re
+import shutil
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -414,6 +415,99 @@ def print_wiki_doors_by_room(d_regions, world, player):
                 toprint += ('') + "\n"
         with open(os.path.join(".","resources", "user", "rooms-" + d + ".txt"),"w+") as f:
             f.write(toprint)
+
+textArr = {}
+
+def print_text_doorways(region,doorways,direction):
+		if direction == None:
+				direction = "entrance"
+		j = 1
+		toFile = ""
+		textArr["regions"][region][direction] = {}
+
+		for doorway in doorways:
+		    toFile += (" > " + str(j) + ':' + str(doorway)) + "\n"
+		    thisDoorway = {"name": str(doorway),"id": str(j),"from":{},"to":{}}
+		    if doorway.parent_region and direction == "entrance":
+		        toFile += (("  > %s (Region): %s") % ("From" if direction == "entrance" else "To", str(doorway.parent_region))) + "\n"
+		        thisDoorway["from" if direction == "entrance" else "to"]["region"] = str(doorway.parent_region)
+		    if doorway.door:
+		        toFile += (("  > %s (%s): %s") % ("From" if direction == "entrance" and str(doorway.door.type) != "DoorType.Logical" else "To", "Door" if doorway.parent_region and direction == "entrance" else "Region", str(doorway.door.dest))) + "\n"
+		        toFile += ("  > Type: " + str(doorway.door.type)) + "\n"
+		        if doorway.door.crystal:
+		            toFile += ("  > Crystal: " + str(doorway.door.crystal)) + "\n"
+		        if str(doorway.door.type) != "DoorType.Logical":
+		            toFile += ("  > Quad Indicator: " + str(doorway.door.quad_indicator())) + "\n"
+		            if doorway.door.getTarget(doorway.door):
+		                toFile += ("  > Target: " + str(doorway.door.getTarget(doorway.door))) + "\n"
+		            if doorway.door.direction:
+		                toFile += ("  > Direction: " + str(doorway.door.direction)) + "\n"
+		            if doorway.door.roomIndex and doorway.door.roomIndex > 0:
+		                toFile += ("  > Room Index: " + str(doorway.door.roomIndex)) + "\n"
+		            if doorway.door.doorIndex and doorway.door.doorIndex > 0:
+		                toFile += ("  > Door Index: " + str(doorway.door.doorIndex)) + "\n"
+		            if doorway.door.getAddress():
+		                toFile += ("  > Address: " + str(doorway.door.getAddress())) + "\n"
+		            if doorway.door.req_event:
+		                toFile += ("  > Required Event: " + str(doorway.door.req_event)) + "\n"
+		            if doorway.door.smallKey:
+		                toFile += ("  > Small Key: " + str(doorway.door.smallKey)) + "\n"
+		            if doorway.door.bigKey:
+		                toFile += ("  > Big Key: " + str(doorway.door.bigKey)) + "\n"
+		            if doorway.door.ugly:
+		                toFile += ("  > Malformed (ugly): " + str(doorway.door.ugly)) + "\n"
+		            if doorway.door.blocked:
+		                toFile += ("  > Blocked: " + str(doorway.door.blocked)) + "\n"
+		            if doorway.door.stonewall:
+		                toFile += ("  > Stonewall: " + str(doorway.door.stonewall)) + "\n"
+		            if doorway.door.layer and doorway.door.layer > 0:
+		                toFile += ("  > Layer: " + str(doorway.door.layer)) + "\n"
+		            if doorway.door.quadrant and doorway.door.quadrant > 0:
+		                toFile += ("  > Quadrant: " + str(doorway.door.quadrant)) + "\n"
+		    j += 1
+
+		return toFile
+
+def print_text_doors(world):
+    if os.path.isdir(os.path.join(".","resources","user","regions")):
+        shutil.rmtree(os.path.join(".","resources","user","regions"))
+    os.makedirs(os.path.join(".","resources","user","regions"))
+    toFile = ""
+    i = 1
+    textArr["regions"] = {}
+    for region in world.regions:
+        toFile += (str(i) + ':' + str(region)) + "\n"
+        textArr["regions"][str(region)] = {}
+        if len(region.entrances) > 0:
+            toFile += ("> Entrances:") + "\n"
+            toFile += print_text_doorways(str(region),region.entrances, "entrance")
+        if len(region.exits) > 0:
+            toFile += ("> Exits:") + "\n"
+            toFile += print_text_doorways(str(region),region.exits, "exit")
+        if len(region.locations) > 0:
+            j = 1
+            toFile += ("> Locations:") + "\n"
+            for location in region.locations:
+                toFile += (" > " + str(j) + ':' + str(location)) + "\n"
+                # toFile += (("  > %s:%s:%s") % (str(location.item), str(location.item.code), ('$' + str(location.item.price) if "Shop" in str(location) else ""))) + "\n"
+                j += 1
+        if region.shop:
+            toFile += ("> Shop") + "\n"
+            toFile += (" > Room ID: " + str(region.shop.room_id)) + "\n"
+            toFile += (" > Shopkeep ID: " + str(region.shop.shopkeeper_config)) + "\n"
+            toFile += (" > Type: " + str(region.shop.type)) + "\n"
+            toFile += (" > Custom: " + str(region.shop.custom)) + "\n"
+            toFile += (" > Locked: " + str(region.shop.locked)) + "\n"
+            toFile += (" > Bytes: " + str(region.shop.get_bytes())) + "\n"
+            toFile += (" > SRAM: " + str(region.shop.sram_address)) + "\n"
+        i += 1
+        toFile += "\n"
+        if i % 100 == 0:
+            with(open(os.path.join(".","resources","user","regions","Dump" + str(i) + ".txt"), "w+")) as regions_file:
+                regions_file.write(toFile)
+                toFile = ""
+    for shop in world.shops:
+        print(shop)
 
 def print_xml_doors(d_regions, world, player):
     root = ET.Element('root')

@@ -24,7 +24,7 @@ from Dungeons import create_dungeons, fill_dungeons, fill_dungeons_restrictive
 from Fill import distribute_items_cutoff, distribute_items_staleness, distribute_items_restrictive, flood_items
 from Fill import sell_potions, sell_keys, balance_multiworld_progression, balance_money_progression
 from ItemList import generate_itempool, difficulties, fill_prizes, customize_shops
-from Utils import output_path, parse_player_names
+from Utils import output_path, parse_player_names, print_text_doors
 
 __version__ = '0.3.1.4-u'
 
@@ -325,6 +325,8 @@ def main(args, seed=None, fish=None):
 
 #    print_wiki_doors_by_room(dungeon_regions,world,1)
 #    print_wiki_doors_by_region(dungeon_regions,world,1)
+
+    print_text_doors(world)
 
     return world
 
