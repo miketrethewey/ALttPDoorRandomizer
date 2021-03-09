@@ -7,6 +7,7 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 from collections import defaultdict
+from EntranceShuffle import door_addresses, exit_ids
 
 def int16_as_bytes(value):
     value = value & 0xFFFF
@@ -420,6 +421,11 @@ def print_wiki_doors_by_room(d_regions, world, player):
 textArr = {"$schema": ""}
 
 def print_text_doorways(region,doorways,direction,i):
+    def my_hex(inbound, precision=None):
+        if not precision:
+            precision = 4
+        return "0x" + format(inbound, "0" + str(precision) + "X").upper()
+
     if direction == None:
         direction = "entrances"
     j = len(textArr["rooms"][i]["nodes"]) + 1
@@ -432,8 +438,44 @@ def print_text_doorways(region,doorways,direction,i):
             "name": str(doorway),
             "nodeType": direction,
             "nodeSubType": "",
-            "nodeAddress": ""
+            "nodeAddress": {}
         }
+        nodeAddresses = {}
+        if str(doorway) in door_addresses:
+            if isinstance(door_addresses[str(doorway)][0],list):
+                nodeAddresses["door_index"] = []
+                for v in door_addresses[str(doorway)][0]:
+                    nodeAddresses["door_index"].append(my_hex(v,6))
+            else:
+                nodeAddresses["door_index"] = my_hex(door_addresses[str(doorway)][0],2)
+
+        if str(doorway) in exit_ids:
+            if isinstance(exit_ids[str(doorway)],tuple) and exit_ids[str(doorway)][0] is not None:
+                # if it's a tuple and the first element isn't None
+                nodeAddresses["entrance_id"] = my_hex(exit_ids[str(doorway)][0],2)
+            elif (not isinstance(exit_ids[str(doorway)],tuple)) and exit_ids[str(doorway)] is not None:
+                # if it's not a tuple and it isn't None
+                nodeAddresses["entrance_id"] = my_hex(exit_ids[str(doorway)],2)
+            if isinstance(exit_ids[str(doorway)],tuple) and exit_ids[str(doorway)][1] is not None:
+                nodeAddresses["exit_id"] = my_hex(exit_ids[str(doorway)][1],2)
+
+        if str(doorway) in door_addresses and door_addresses[str(doorway)][1]:
+            nodeAddresses["room_id"] = my_hex(door_addresses[str(doorway)][1][0],4)
+            nodeAddresses["ow_area"] = my_hex(door_addresses[str(doorway)][1][1],2)
+            nodeAddresses["vram_loc"] = my_hex(door_addresses[str(doorway)][1][2],4)
+            nodeAddresses["scroll_y"] = my_hex(door_addresses[str(doorway)][1][3],4)
+            nodeAddresses["scroll_x"] = my_hex(door_addresses[str(doorway)][1][4],4)
+            nodeAddresses["link_y"] = my_hex(door_addresses[str(doorway)][1][5],4)
+            nodeAddresses["link_x"] = my_hex(door_addresses[str(doorway)][1][6],4)
+            nodeAddresses["camera_y"] = my_hex(door_addresses[str(doorway)][1][7],4)
+            nodeAddresses["camera_x"] = my_hex(door_addresses[str(doorway)][1][8],4)
+            nodeAddresses["unknown_1"] = my_hex(door_addresses[str(doorway)][1][9],2)
+            nodeAddresses["unknown_2"] = my_hex(door_addresses[str(doorway)][1][10],2)
+            nodeAddresses["door_1"] = my_hex(door_addresses[str(doorway)][1][11],4)
+            nodeAddresses["door_2"] = my_hex(door_addresses[str(doorway)][1][12],4)
+
+        thisDoorway["nodeAddress"] = nodeAddresses
+
         if doorway.parent_region:
             if "entrance" in direction:
                 toFile += (("  > %s (Region): %s") % ("From" if "entrance" in direction else "To", str(doorway.parent_region))) + "\n"
@@ -463,7 +505,7 @@ def print_text_doorways(region,doorways,direction,i):
                     toFile += ("  > Address: " + str(doorway.door.getAddress())) + "\n"
                     thisDoorway["nodeAddress"] = {
                         "dec": doorway.door.getAddress(),
-                        "hex": hex(doorway.door.getAddress()).upper().replace("0X","0x")
+                        "hex": my_hex(doorway.door.getAddress())
                     }
                 if doorway.door.req_event:
                     toFile += ("  > Required Event: " + str(doorway.door.req_event)) + "\n"
@@ -595,8 +637,6 @@ def print_text_doors(world):
             with(open(os.path.join(".","resources","user","regions","Dump" + str(i) + ".txt"), "w+")) as regions_file:
                 regions_file.write(toFile)
                 toFile = ""
-    for shop in world.shops:
-        print(shop)
     with(open(os.path.join(".","resources","user","regions","dump.json"), "w+")) as regions_file:
         json.dump(textArr,regions_file,indent=2)
 
