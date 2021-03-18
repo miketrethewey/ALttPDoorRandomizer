@@ -599,7 +599,8 @@ def print_text_doors(world):
                     "name": location.name,
                     "nodeType": "item",
                     "nodeItem": "Item Name",
-                    "nodeItemCode": "Item Code"
+                    "nodeItemCode": "Item Code",
+                    "nodeAddress": ""
                 }
                 if "Shop" in str(location):
                     thisLocation["nodeItemPrice"] = 0
