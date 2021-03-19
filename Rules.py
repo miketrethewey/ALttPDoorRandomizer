@@ -41,6 +41,8 @@ def set_rules(world, player):
     elif world.goal[player] == 'ganon':
         # require aga2 to beat ganon
         add_rule(world.get_location('Ganon', player), lambda state: state.has('Beat Agahnim 2', player))
+    elif world.goal[player] == 'triforcehunt':
+        add_rule(world.get_location('Murahdahla', player), lambda state: state.item_count('Triforce Piece', player) + state.item_count('Power Star', player) >= int(state.world.treasure_hunt_count[player]))
 
     if world.mode[player] != 'inverted':
         set_big_bomb_rules(world, player)
@@ -1282,21 +1284,15 @@ def set_inverted_big_bomb_rules(world, player):
                              'Hookshot Cave',
                              'Turtle Rock Isolated Ledge Entrance',
                              'Hookshot Cave Back Entrance',
-                             'Inverted Agahnims Tower',
-                             'Dark Lake Hylia Ledge Fairy',
-                             'Dark Lake Hylia Ledge Spike Cave',
-                             'Dark Lake Hylia Ledge Hint',
-                             'Mire Shed',
-                             'Dark Desert Hint',
-                             'Dark Desert Fairy',
-                             'Misery Mire']
+                             'Inverted Agahnims Tower',]
     LW_walkable_entrances = ['Dark Lake Hylia Ledge Fairy',
                              'Dark Lake Hylia Ledge Spike Cave',
                              'Dark Lake Hylia Ledge Hint',
                              'Mire Shed',
                              'Dark Desert Hint',
                              'Dark Desert Fairy',
-                             'Desert Palace Entrance (East)']
+                             'Misery Mire',
+                             'Red Shield Shop']
     LW_bush_entrances = ['Bush Covered House',
                          'Light World Bomb Hut',
                          'Graveyard Cave']
