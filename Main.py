@@ -102,7 +102,8 @@ def main(args, seed=None, fish=None):
             logger.info('%s%s', 'Team%d: ' % i if world.teams > 1 else 'Players: ', ', '.join(team))
         for player, name in enumerate(team, 1):
             world.player_names[player].append(name)
-    logger.info('')
+    if world.teams > 1:
+        logger.info("")
 
     for player in range(1, world.players + 1):
         world.difficulty_requirements[player] = difficulties[world.difficulty[player]]

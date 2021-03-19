@@ -1,38 +1,51 @@
+# Enemizer Output
+EnemizerCLI/
+RaceRom.py
+weights/
+
+# IDE
 .idea
 .vscode
-*_Spoiler.txt
-*.bmbp
-*.log
-*_Spoiler.json
-*.pyc
-*.sfc
-*.srm
-*.bst
-*.wixobj
+.vs/
 build
 bundle/components.wxs
 dist
-README.html
-.vs/
+test
+upx/
+venv
+get-pip.py
+*.exe
+
+# MW Output
 *multidata
 *multisave
-EnemizerCLI/
-.mypy_cache/
-RaceRom.py
-upx/
-weights/
 /MultiMystery/
 /Players/
 /QUsb2Snes/
 
-base2current.json
+# Py
+.mypy_cache/
+*.log
+*.pyc
 
+# Rando Output
+base2current.json
+*.bmbp
+*_Spoiler.json
+*_Spoiler.txt
+
+# SFC
+*.bst
+*.sfc
+*.srm
+*.wixobj
+
+# Sprites
+data/sprites/*
+!data/sprites/*/*link*zspr
+
+# User
 resources/user/*
 !resources/user/.gitkeep
 
-*.exe
-
-get-pip.py
-
-venv
-test
+README.html

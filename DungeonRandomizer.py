@@ -70,6 +70,7 @@ def start():
             try:
                 main(seed=seed, args=args, fish=fish)
                 logger.info('%s %s', fish.translate("cli","cli","finished.run"), _+1)
+                logger.info("---------------------------------------")
             except (FillError, EnemizerError, Exception, RuntimeError) as err:
                 failures.append((err, seed))
                 logger.warning('%s: %s', fish.translate("cli","cli","generation.failed"), err)
