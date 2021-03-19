@@ -2,6 +2,12 @@ import logging
 
 from BaseClasses import Item
 
+# Translate between Mike's label array and internal names
+def get_starting_item_name(item):
+  item_switcher = {
+    "Magic Cape": "Cape"
+  }
+  return item_switcher.get(item) if item in item_switcher else item
 
 def ItemFactory(items, player):
     ret = []
@@ -10,6 +16,7 @@ def ItemFactory(items, player):
         items = [items]
         singleton = True
     for item in items:
+        item = get_starting_item_name(item)
         if item in item_table:
             advancement, priority, type, code, price, pedestal_hint, pedestal_credit, sickkid_credit, zora_credit, witch_credit, fluteboy_credit, hint_text = item_table[item]
             ret.append(Item(item, advancement, priority, type, code, price, pedestal_hint, pedestal_credit, sickkid_credit, zora_credit, witch_credit, fluteboy_credit, hint_text, player))
